@@ -88,7 +88,7 @@ class Usuario extends BaseBiz
                 }else{
                     $loginStatus = 1; // está ok
                 }
-                return true;
+                
             }
             return $loginStatus;
         }catch (Exception $e){

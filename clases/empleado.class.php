@@ -8,7 +8,7 @@ class Empleado extends BaseBiz{
         try{
             $sqlStat = "SELECT e.id_empleado,e.nombre,
                         e.apellido,e.calle,e.numero_calle,
-                        e.localidad,ifnull(p.provincia,'') AS provincia,
+                        e.localidad,p.provincia,
                         e.email,ifnull(e.id_usuario,0) as id_usuario
                         from empleado e
                         left JOIN provincia p ON e.cod_provincia = p.cod_provincia";
