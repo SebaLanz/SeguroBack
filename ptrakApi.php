@@ -46,6 +46,7 @@ $aplicacion->mw_verificarToken = function ($request, $response, $next) use ($apl
 
 require_once 'routes/usuario.routes.php'; // endpoints de usuario
 require_once 'routes/empleado.routes.php'; // endpoints de empleado
+require_once 'routes/misc.routes.php'; // endpoints de empleado
 
 $aplicacion->run();
 

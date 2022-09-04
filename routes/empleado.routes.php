@@ -90,6 +90,27 @@ $aplicacion->put('/empleado',  function(Request $request, Response $response, $a
 		}			
 		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 	})->add($aplicacion->mw_verificarToken);
+
+	$aplicacion->delete('/empleado/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
+		$dataSalida = array();
+		$statuscode = 201;
+		$statusmsg = 'Empleado actualizado';				 
+		try{
+			$id = $args['id'];
+			// levanto los parámetros del body del request		
+
+			$objEmpleado = new Empleado();
+
+			$objEmpleado->delete($id);
+			 
+			$dataSalida = array();
+			
+		}catch (Exception $e){
+			$statuscode = 500;
+			$statusmsg = 'Error :'.$e->getMessage();
+		}			
+		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
+	})->add($aplicacion->mw_verificarToken);
    
 
 ?>
