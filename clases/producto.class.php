@@ -5,13 +5,14 @@ class Producto extends BaseBiz{
 
     public function getAll(){
         try{
+
             $resultado = $this->ResultQuery("select * from producto");
             return $resultado;
         }catch (Exception $e){
             throw new Exception(" Error obteniendo el producto : ".$e->getMessage());         
         }
     }
-
+    
     public function getById($id_producto){
         try{
             $selectStat = "select * from producto where id_producto = $id_producto";
@@ -26,8 +27,13 @@ class Producto extends BaseBiz{
             throw new Exception(" Error obteniendo producto : ".$e->getMessage());         
         }
     }
-public function save($id_producto = 0, $producto, $detalle ){       
 
+
+    public function crear($id_producto = 0, $producto, $detalle ){       
+        //no debe recibir id producto 
+        //debe recibir código de producto, producto, detalle, y id_rubro
+        // valida que el código de producto no exista (si exite error ya existe)
+        // valida que exista el id_rubro (si no existe error el id rubro no existe)
         if(empty($producto)) {
              throw new Exception("::Error, debe indicar al menos  el nombre del producto para esta operación ");
         }
@@ -58,9 +64,11 @@ public function save($id_producto = 0, $producto, $detalle ){
             throw new Exception("::Error obteniendo producto  ".$e->getMessage());         
         }
     }
+
+
    public function delete($id_producto){          
         try{            
-
+            // validar antes de borrar que el código no esté utilizado en las tablas en las que es fk
             $recproducto =  $this->getByid($id_producto);
 
             $selectStat = "select id_producto from producto where id_producto = $id_producto";
@@ -74,6 +82,8 @@ public function save($id_producto = 0, $producto, $detalle ){
             }else{
                 throw new Exception(" No puede eliminarse el producto");
             }
+        }catch (Exception $e){
+            throw new Exception("::Error eliminando producto  ".$e->getMessage());         
         }   
             
     }
