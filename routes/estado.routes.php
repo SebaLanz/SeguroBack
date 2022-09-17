@@ -60,7 +60,7 @@ $aplicacion->put('/estado',  function(Request $request, Response $response, $arg
 		try{
 			$id = $request->getParsedBodyParam("id_estado", $default = 0);
 			// levanto los parámetros del body del request
-			$Descripcion = $request->getParsedBodyParam("Descricion", $default = "");	
+			$Descripcion = $request->getParsedBodyParam("descripcion", $default = "");	
 
 			$objEstado = new Estado();
 

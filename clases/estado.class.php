@@ -20,6 +20,7 @@ class estado extends BaseBiz{
     //funciona
     public function getById($id_estado){
         try{
+            // si no está el id que se busca, lanzar error no existe el id...
             $selectStat = "select * from estado where id_estado = $id_estado";
             $resultado = $this->ResultQuery($selectStat);                        
             return  $resultado;           
@@ -72,6 +73,7 @@ class estado extends BaseBiz{
     public function save($id_estado = 0, $Descripcion, $id_stock = 0){       
 
         try{
+            // ver si les sirve usar el getbyid para validar que exista....
             if($id_estado != 0){
                 // llegó id valido que exista para hacer update
                 $selectStat = "SELECT * FROM estado WHERE id_estado = $id_estado ";
