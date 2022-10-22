@@ -51,6 +51,7 @@ require_once 'routes/misc.routes.php'; // endpoints de miscelaneas
 require_once 'routes/rubro.routes.php'; // endpoints de rubro
 require_once 'routes/producto.routes.php';
 require_once 'routes/estado.routes.php'; // endpoints de estado
+require_once 'routes/proveedor.routes.php'; // endpoints de estado
 
 
 $aplicacion->run();
