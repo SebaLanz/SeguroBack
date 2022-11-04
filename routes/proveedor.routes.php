@@ -18,6 +18,20 @@ $aplicacion->get('/proveedor/all',  function(Request $request, Response $respons
 	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 } )->add($aplicacion->mw_verificarToken);
 
+$aplicacion->get('/proveedor/allActivo',  function(Request $request, Response $response, $args) use ($aplicacion){	
+	$dataSalida = array();
+	$statusmsg = "ok";		
+	$statuscode = 200;
+	try{
+		$objproveedor = new Proveedor();
+		$dataSalida = $objproveedor->getAllActivo();			
+	}catch (Exception $e){
+		$statuscode = 500;	
+		$statusmsg = 'Error :'.$e->getMessage();			
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
+} )->add($aplicacion->mw_verificarToken);
+
 $aplicacion->get('/proveedor/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
 	$dataSalida = array();
 	$statusmsg = "ok";		
@@ -115,5 +129,35 @@ $aplicacion->delete('/proveedor/{id}',  function(Request $request, Response $res
 	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 })->add($aplicacion->mw_verificarToken);
 
+// desactivar proveedor por idusuario //
+$aplicacion->put('/proveedor/desactivar/{id_proveedor}',  function(Request $request, Response $response, $args) use ($aplicacion){
+	$dataSalida = array();
+	$statusmsg = "proveedor desactivado";		
+	$statuscode = 200;	
+	try{
+		$objproveedor = new Proveedor();
+		$objproveedor->desactivar($args['id_proveedor']);
+		$dataSalida = array();			
+	}catch (Exception $e){
+		$statuscode = 500;		
+		$statusmsg = 'Error :'.$e->getMessage();
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
+} )->add($aplicacion->mw_verificarToken);
 
+// activar proveedor por usuario
+$aplicacion->put('/proveedor/activar/{id_proveedor}',  function(Request $request, Response $response, $args) use ($aplicacion){
+	$dataSalida = array();
+	$statusmsg = "proveedor activado";		
+	$statuscode = 200;	
+	try{
+		$objproveedor = new Proveedor();
+		$objproveedor->activar($args['id_proveedor']);
+		$dataSalida = array();			
+	}catch (Exception $e){
+		$statuscode = 500;		
+		$statusmsg = 'Error :'.$e->getMessage();
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
+} )->add($aplicacion->mw_verificarToken);
 ?>

@@ -14,6 +14,16 @@ class Proveedor extends BaseBiz{
         }
     }
 
+    public function getAllActivo(){
+        try{
+            $sqlStat = "SELECT * FROM proveedor where activo = '1'";
+            $resultado = $this->ResultQuery($sqlStat);
+            return $resultado;
+        }catch (Exception $e){
+            throw new Exception(" Error obteniendo estado : ".$e->getMessage());         
+        }
+    }
+
     public function getById($id_proveedor){
         try{
             $selectStat = "select * from proveedor where id_proveedor = $id_proveedor";
@@ -28,6 +38,7 @@ class Proveedor extends BaseBiz{
             throw new Exception(" Error obteniendo proveedor : ".$e->getMessage());         
         }
     }
+
 
  
     public function crear( $razon_soc, $cuit, $calle="", $numero_calle="",
@@ -178,5 +189,23 @@ class Proveedor extends BaseBiz{
         }
     }
 
+    public function activar($id_proveedor){
+        $this->updateEstado($id_proveedor,1);
+    }
+
+    //
+    public function desActivar($id_proveedor){
+        $this->updateEstado($id_proveedor,0);
+    }
+
+    private function updateEstado($id_proveedor,$estado){
+        try{
+            $registroProveedor = $this->getById($id_proveedor);                      
+            $updStat = "update proveedor set activo=$estado where id_proveedor = '$id_proveedor'";
+            $this->noResultQuery($updStat);            
+        }catch (Exception $e){
+            throw new Exception(" Error Desactivando proveedor. : ".$e->getMessage());         
+        }
+    }
 }
 ?>
