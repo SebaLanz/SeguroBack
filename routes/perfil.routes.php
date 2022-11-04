@@ -2,15 +2,15 @@
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-require_once 'clases/empleado.class.php';
+require_once 'clases/perfil.class.php';
 
-$aplicacion->get('/empleado/all',  function(Request $request, Response $response, $args) use ($aplicacion){	
+$aplicacion->get('/perfil/all',  function(Request $request, Response $response, $args) use ($aplicacion){	
 	$dataSalida = array();
 	$statusmsg = "ok";		
 	$statuscode = 200;
 	try{
-		$objEmpleado = new Empleado();
-		$dataSalida = $objEmpleado->getAll();			
+		$objPerfil = new perfil();
+		$dataSalida = $objPerfil->getAll();			
 	}catch (Exception $e){
 		$statuscode = 500;	
 		$statusmsg = 'Error :'.$e->getMessage();			
@@ -18,13 +18,13 @@ $aplicacion->get('/empleado/all',  function(Request $request, Response $response
 	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 } )->add($aplicacion->mw_verificarToken);
 
-$aplicacion->get('/empleado/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
+$aplicacion->get('/perfil/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
 	$dataSalida = array();
 	$statusmsg = "ok";		
 	$statuscode = 200;	
 	try{
-		$objEmpleado = new Empleado();
-		$dataSalida = $objEmpleado->getById($args['id']);			
+		$objPerfil = new Perfil();
+		$dataSalida = $objPerfil->getById($args['id']);			
 	}catch (Exception $e){
 		$statuscode = 500;		
 		$statusmsg = 'Error :'.$e->getMessage();
@@ -33,25 +33,18 @@ $aplicacion->get('/empleado/{id}',  function(Request $request, Response $respons
 } )->add($aplicacion->mw_verificarToken);	
 
 
-$aplicacion->post('/empleado',  function(Request $request, Response $response, $args) use ($aplicacion){
+$aplicacion->post('/perfil',  function(Request $request, Response $response, $args) use ($aplicacion){
 		$dataSalida = array();
 		$statuscode = 201;
-		$statusmsg = 'Empleado creado';		
+		$statusmsg = 'Perfil creado';		
 		try{
 			// levanto los parámetros del body del request
-			$nombre = $request->getParsedBodyParam("nombre", $default = "");
-			$apellido = $request->getParsedBodyParam("apellido", $default = "");
-			$email = $request->getParsedBodyParam("email", $default = "");
-			$calle = $request->getParsedBodyParam("calle", $default = "");	
-			$numero_calle = $request->getParsedBodyParam("numero_calle", $default = "");	
-			$localidad = $request->getParsedBodyParam("localidad", $default = "");				
-			$cod_provincia = $request->getParsedBodyParam("cod_provincia", $default = "");	
-			$id_usuario = $request->getParsedBodyParam("id_usuario", $default = "");	
+			$perfil = $request->getParsedBodyParam("perfil", $default = "");
+			$esdefault = $request->getParsedBodyParam("esdefault", $default = "");	
 
-			$objEmpleado = new Empleado();
+			$objPerfil = new Perfil();
 
-			$objEmpleado->crear( $nombre, $apellido, $email, $calle, $numero_calle,
-                           			$localidad, $cod_provincia, $id_usuario);	
+			$objPerfil->crear( $perfil, $esdefault);	
 
 			$dataSalida = array();
 		}catch (Exception $e){
@@ -61,10 +54,10 @@ $aplicacion->post('/empleado',  function(Request $request, Response $response, $
 		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 	})->add($aplicacion->mw_verificarToken);
 
-$aplicacion->put('/empleado',  function(Request $request, Response $response, $args) use ($aplicacion){
+$aplicacion->put('/perfil',  function(Request $request, Response $response, $args) use ($aplicacion){
 		$dataSalida = array();
 		$statuscode = 201;
-		$statusmsg = 'Empleado actualizado';				 
+		$statusmsg = 'Perfil actualizado';				 
 		try{
 			$id = $request->getParsedBodyParam("id_empleado", $default = 0);
 			// levanto los parámetros del body del request
@@ -78,9 +71,9 @@ $aplicacion->put('/empleado',  function(Request $request, Response $response, $a
 			$cod_provincia = $request->getParsedBodyParam("cod_provincia", $default = "");	
 			$id_usuario = $request->getParsedBodyParam("id_usuario", $default = "");	
 
-			$objEmpleado = new Empleado();
+			$objPerfil = new Perfil();
 
-			$objEmpleado->update($id, $nombre, $apellido, $email, $calle, $numero_calle, $localidad, $cod_provincia, $id_usuario);
+			$objPerfil->update($id_perfil, $perfil, $esdefault);
 			 
 			$dataSalida = array();
 			
