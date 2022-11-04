@@ -94,7 +94,7 @@ $aplicacion->put('/empleado',  function(Request $request, Response $response, $a
 	$aplicacion->delete('/empleado/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
 		$dataSalida = array();
 		$statuscode = 201;
-		$statusmsg = 'Empleado actualizado';				 
+		$statusmsg = 'Empleado eliminado';				 
 		try{
 			$id = $args['id'];
 			// levanto los parámetros del body del request		

@@ -48,7 +48,7 @@ class baseBiz{
     // inicia una transacción
     function iniciarTransaccion(){   
         // pasa manos con el dao
-        return $this->dao->NoResultQuery("STRAT TRANSACTION");        
+        return $this->dao->NoResultQuery("START TRANSACTION");        
     }
 
     // finaliza la transacción

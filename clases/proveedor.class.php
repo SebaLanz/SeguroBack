@@ -6,10 +6,21 @@ class Proveedor extends BaseBiz{
 
     public function getAll(){
         try{
-            $resultado = $this->ResultQuery("select * from proveedor");
+            $sqlStat = "SELECT * FROM proveedor";
+            $resultado = $this->ResultQuery($sqlStat);
             return $resultado;
         }catch (Exception $e){
-            throw new Exception(" Error obteniendo proveedores : ".$e->getMessage());         
+            throw new Exception(" Error obteniendo estado : ".$e->getMessage());         
+        }
+    }
+
+    public function getAllActivo(){
+        try{
+            $sqlStat = "SELECT * FROM proveedor where activo = '1'";
+            $resultado = $this->ResultQuery($sqlStat);
+            return $resultado;
+        }catch (Exception $e){
+            throw new Exception(" Error obteniendo estado : ".$e->getMessage());         
         }
     }
 
@@ -28,10 +39,11 @@ class Proveedor extends BaseBiz{
         }
     }
 
+
  
     public function crear( $razon_soc, $cuit, $calle="", $numero_calle="",
                            $localidad="", $cod_provincia = null, $email="", $telefono=""){ 
-
+                   
         if(!empty($razon_soc) && !empty($cuit)){
             
             $insertFields = " INSERT INTO proveedor( razon_soc, cuit ";
@@ -67,60 +79,63 @@ class Proveedor extends BaseBiz{
             $insertValues .= ")"; 
             //return $insertFields.$insertValues;
             $this->noResultQuery($insertFields.$insertValues); 
+           
         }else{
+           
             throw new Exception(" La razón social y el cuit son obligatorios para crear un proveedor : ".$e->getMessage());  
         }
     }
 
 
-public function update( $id_proveedor=0, $razon_soc, $cuit, $calle="", $numero_calle="",
-                           $localidad="", $cod_provincia = null, $email="", $telefono=""){ 
-     
+    public function update( $id_proveedor=0, $razon_soc, $cuit, $calle="", $numero_calle="",
+                            $localidad="", $cod_provincia = null, $telefono="", $email=""){ 
 
-        if(!empty($id_proveedor)){
-            $registroproveedor = $this->getByid($id_proveedor);
-            
-            $updateStat = " update proveedor set ";
-            $updateFields = "";
-            $updateFilter = " where id_proveedor = $id_proveedor";
 
-            // campos no obligatorios
-            if(!empty($razon_soc)){
-                if(!empty($updateFields)){
-                   $updateFields .= ",";   
-                }
-                $updateFields .= " razon_soc ='$razon_soc'";             
-            }
-            if(!empty($cuit)){
-                if(!empty($updateFields)){
-                   $updateFields .= ",";   
-                }
-                $updateFields .= " cuit ='$cuit'";             
-            }
+    if(!empty($id_proveedor)){
+        $registroproveedor = $this->getByid($id_proveedor);
 
-            if(!empty($updateFields)){
-                $updateFields .= ",";   
-            }
+        $updateStat = " update proveedor set ";
+        $updateFields = "";
+        $updateFilter = " where id_proveedor = $id_proveedor";
 
-            $updateFields .= " email ='$email'";
-           
-            $updateFields .= ", calle ='$calle'";
-            
-            $updateFields .= " telefono ='$telefono'";
-            
-            $updateFields .= ", numero_calle ='$numero_calle'";
-            
-            if($cod_provincia!=null){
-                $updateFields .= ", cod_provincia ='$cod_provincia'";
-            }else{
-                $updateFields .= ", cod_provincia = NULL ";
-            }
-           
-            $updateFields .= ", localidad ='$localidad'";
-            
-            $this->noResultQuery($updateStat.$updateFields.$updateFilter); 
+        // campos no obligatorios
+        if(!empty($razon_soc)){
+        if(!empty($updateFields)){
+        $updateFields .= ",";   
+        }
+        $updateFields .= " razon_soc ='$razon_soc'";             
+        }
+        if(!empty($cuit)){
+        if(!empty($updateFields)){
+        $updateFields .= ",";   
+        }
+        $updateFields .= " cuit ='$cuit'";             
+        }
+
+        if(!empty($updateFields)){
+        $updateFields .= ",";   
+        }
+
+        $updateFields .= " telefono ='$telefono'";
+
+        $updateFields .= ", calle ='$calle'";
+
+        $updateFields .= ", email ='$email'";
+
+        $updateFields .= ", numero_calle ='$numero_calle'";
+
+        if($cod_provincia!=null){
+        $updateFields .= ", cod_provincia ='$cod_provincia'";
         }else{
-            throw new Exception(" El id_proveedor es obligatorio para modificar un proveedor : ".$e->getMessage());  
+        $updateFields .= ", cod_provincia = NULL ";
+        }
+
+        $updateFields .= ", localidad ='$localidad'";
+
+
+        $this->noResultQuery($updateStat.$updateFields.$updateFilter); 
+        }else{
+        throw new Exception(" El id_proveedor es obligatorio para modificar un proveedor : ".$e->getMessage());  
         }
     }
 
@@ -138,18 +153,22 @@ public function update( $id_proveedor=0, $razon_soc, $cuit, $calle="", $numero_c
 
     public function crearContacto($id_proveedor, $nombre, $apellido, $telefono="", $celular="", $email=""){       
         
-        try{       
+        try{  
+            $this->iniciarTransaccion();     
             $this->getByid($id_proveedor);// valida que exista                                  
             $oContactos = new ProveedorContactoContacto();              
             $oContactos->crear($id_proveedor, $nombre, $apellido, $telefono, $celular, $email);
+            $this->commitTransaccion();
         }catch (Exception $e){
-            throw new Exception(" Error creando contacto : ".$e->getMessage());         
+            $this->rollBackTransaccion();
+            throw new Exception(" Error creando contacto de Proveedor : ".$e->getMessage());         
         }
     }
 
     public function getAllContacto($id_proveedor){      
         
         try{       
+
             $this->getByid($id_proveedor);// valida que exista                                  
             $oContactos = new ProveedorContactoContacto();              
             $oContactos->getAll($id_proveedor);
@@ -170,5 +189,23 @@ public function update( $id_proveedor=0, $razon_soc, $cuit, $calle="", $numero_c
         }
     }
 
+    public function activar($id_proveedor){
+        $this->updateEstado($id_proveedor,1);
+    }
+
+    //
+    public function desActivar($id_proveedor){
+        $this->updateEstado($id_proveedor,0);
+    }
+
+    private function updateEstado($id_proveedor,$estado){
+        try{
+            $registroProveedor = $this->getById($id_proveedor);                      
+            $updStat = "update proveedor set activo=$estado where id_proveedor = '$id_proveedor'";
+            $this->noResultQuery($updStat);            
+        }catch (Exception $e){
+            throw new Exception(" Error Desactivando proveedor. : ".$e->getMessage());         
+        }
+    }
 }
 ?>

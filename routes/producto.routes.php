@@ -11,7 +11,9 @@ $aplicacion->get('/producto/all',  function(Request $request, Response $response
 	try{
 		
 		$objproducto = new Producto();
+
 		$dataSalida = $objproducto->getProductosAll();
+
 
 	}catch (Exception $e){
 		$statuscode = 500;	
@@ -41,6 +43,7 @@ $aplicacion->post('/producto',  function(Request $request, Response $response, $
 		$statusmsg = 'producto creado';		
 		try{
 			// levanto los parámetros del body del request
+
 			$id_producto = $request->getParsedBodyParam("id_producto", $default = "");
 			$codigo_producto = $request->getParsedBodyParam("codigo_producto", $default = "");
 			$producto = $request->getParsedBodyParam("producto", $default = "");
@@ -50,6 +53,7 @@ $aplicacion->post('/producto',  function(Request $request, Response $response, $
 			$objproducto = new Producto();
 
 			$objproducto->crear($id_producto,$codigo_producto,$producto,$detalle,$id_rubro);	
+
 
 			$dataSalida = array();
 		}catch (Exception $e){
@@ -64,6 +68,7 @@ $aplicacion->put('/producto',  function(Request $request, Response $response, $a
 		$statuscode = 201;
 		$statusmsg = 'producto actualizado';				 
 		try{
+
 			$id_producto = $request->getParsedBodyParam("id_producto", $default = "");
 			// levanto los parámetros del body del request
 			$producto = $request->getParsedBodyParam("producto", $default = "");
@@ -79,10 +84,13 @@ $aplicacion->put('/producto',  function(Request $request, Response $response, $a
 			
 		}catch (Exception $e){
 			$statuscode = 500;
+
 			$statusmsg = 'Error :'.$e->getMessage(); 
+
 		}			
 		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 	})->add($aplicacion->mw_verificarToken);
+
 
 	
    
