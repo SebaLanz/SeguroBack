@@ -11,7 +11,9 @@ $aplicacion->get('/producto/all',  function(Request $request, Response $response
 	try{
 		
 		$objproducto = new Producto();
-		$dataSalida = $objproducto->getAll();
+
+		$dataSalida = $objproducto->getProductosAll();
+
 
 	}catch (Exception $e){
 		$statuscode = 500;	
@@ -41,11 +43,17 @@ $aplicacion->post('/producto',  function(Request $request, Response $response, $
 		$statusmsg = 'producto creado';		
 		try{
 			// levanto los parámetros del body del request
+
+			$id_producto = $request->getParsedBodyParam("id_producto", $default = "");
+			$codigo_producto = $request->getParsedBodyParam("codigo_producto", $default = "");
 			$producto = $request->getParsedBodyParam("producto", $default = "");
-			$sigla_producto = $request->getParsedBodyParam("sigla_producto", $default = "");
+			$detalle = $request->getParsedBodyParam("detalle", $default = "");
+			$id_rubro = $request->getParsedBodyParam("id_rubro", $default = "");
+			
 			$objproducto = new Producto();
 
-			$objproducto->crear($producto, $sigla_producto );	
+			$objproducto->crear($id_producto,$codigo_producto,$producto,$detalle,$id_rubro);	
+
 
 			$dataSalida = array();
 		}catch (Exception $e){
@@ -60,44 +68,45 @@ $aplicacion->put('/producto',  function(Request $request, Response $response, $a
 		$statuscode = 201;
 		$statusmsg = 'producto actualizado';				 
 		try{
-			$id = $request->getParsedBodyParam("id_producto", $default = 0);
+
+			$id_producto = $request->getParsedBodyParam("id_producto", $default = "");
 			// levanto los parámetros del body del request
 			$producto = $request->getParsedBodyParam("producto", $default = "");
-			
+			$detalle = $request->getParsedBodyParam("detalle", $default = "");
+			$id_rubro = $request->getParsedBodyParam("id_rubro", $default = "");
 
 			$objproducto = new Producto();
 
-			$objproducto->update($id, $producto );
+
+			$objproducto->crear($id_producto,$codigo_producto,$producto,$detalle,$id_rubro);
 			 
 			$dataSalida = array();
 			
 		}catch (Exception $e){
 			$statuscode = 500;
-			$statusmsg = 'Error :'.$e->getMessage();
+
+			$statusmsg = 'Error :'.$e->getMessage(); 
+
 		}			
 		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 	})->add($aplicacion->mw_verificarToken);
 
-	$aplicacion->delete('/producto/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
-		$dataSalida = array();
-		$statuscode = 201;
-		$statusmsg = 'producto actualizado';				 
-		try{
-			$id = $args['id'];
-			// levanto los parámetros del body del request		
 
-			$objproducto = new Producto();
-
-			$objproducto->delete($id);
-			 
-			$dataSalida = array();
-			
-		}catch (Exception $e){
-			$statuscode = 500;
-			$statusmsg = 'Error :'.$e->getMessage();
-		}			
-		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
-	})->add($aplicacion->mw_verificarToken);
+	
    
+$aplicacion->put('/producto/desactivar/{id_producto}', function(Request $request, Response $response, $args) use ($aplicacion){
+	$dataSalida = array();
+	$statusmsg = "producto desactivado";		
+	$statuscode = 200;	
+	try{
+		$objproducto = new Producto();
+		$objproducto->desactivar($args['id_producto']);
+		$dataSalida = array();
+	}catch (Exception $e){
+		$statuscode = 500;		
+		$statusmsg = 'Error :'.$e->getMessage();
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
+} )->add($aplicacion->mw_verificarToken);
 
 ?>

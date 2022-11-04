@@ -54,6 +54,7 @@ require_once 'routes/estado.routes.php'; // endpoints de estado
 require_once 'routes/proveedor.routes.php'; // endpoints de estado
 
 
+
 $aplicacion->run();
 
 
