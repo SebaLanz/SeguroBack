@@ -8,7 +8,7 @@ require_once ("email.class.php");
 class Usuario extends BaseBiz
 {
 
-    public function crearFull($usuario,$clave,$clave2,$email){
+   /*public function crearFull($usuario,$clave,$clave2,$email){
         try{
             if(empty($usuario) || empty($clave) || empty($clave2) || empty($email) ){
                  throw new Exception("Faltan datos necesarios para crear un usuario "); 
@@ -36,11 +36,12 @@ class Usuario extends BaseBiz
             throw new Exception(" Error creando usuario :".$e->getMessage());         
         }
     }
-
+*/
     public function crear($usuario,$email){
         try{
+            //echo $usuario,$email;
             if(empty($usuario) || empty($email) ){
-                 throw new Exception("Faltan datos necesarios para crear un usuario "); 
+                 throw new Exception("Faltan datos necesarios para crear un usuario $usuario.$email "); 
             }  
             
             if(!Email::is_valid_email($email)){
@@ -53,12 +54,22 @@ class Usuario extends BaseBiz
                     $perfilDefRegistro =  $oPerfil->getDefault(); 
                     $id_perfil = $perfilDefRegistro[0]["id_perfil"];
                     
-                    $clave = RandomString::generate_string();
+                    //$clave = RandomString::generate_string();
+					$clave = 123456;
                     $hashedClave = Cripto::getHash($clave);
 
                     $insertStat = "INSERT INTO usuario(usuario,clave,email,cambiar_pass,id_perfil)";
-                    $insertStat .= "VALUES('$usuario','$hashedClave','$email',1,$id_perfil)";
+                    $insertStat .= "VALUES('$usuario','$hashedClave','$email',0,3)";
                     $this->noResultQuery($insertStat);  
+                   
+                    $oID = new Usuario();//instancio objeto
+                    $ultimoId = $oID->getLastId();//ejecuto query para obtener ultimo id insertado
+                    $id_ultimo = $ultimoId[0]["id_usuario"];//me paso el id a una variable.
+
+                    $insertStat2 = "INSERT INTO usuario_perfil(id_usuario)";
+                    $insertStat2 .= "VALUES($id_ultimo)";
+                    $this->noResultQuery($insertStat2);
+          
                     // enviar mail al usuario con la clave
                     $mensaje = "Hola <b>".$usuario."</b>!<br>";
                     $mensaje .= "Tu cuenta de pTrack fue creada !<br>";
@@ -109,6 +120,31 @@ class Usuario extends BaseBiz
         }
     }
 
+    public function getLastId(){
+        try{
+            $sqlStat = "SELECT (u.id_usuario)
+                        FROM usuario u
+                        ORDER BY u.id_usuario
+                        DESC LIMIT 1";
+            $resultado = $this->resultQuery($sqlStat);
+            return $resultado;
+        }catch (Exception $e){
+            throw new Exception(" Error obteniendo último ID : ".$e->getMessage());         
+        }
+    }
+
+    public function getImgPerfil($id_usuario){
+        try{
+            $sqlStat = "SELECT *
+                        FROM  usuario u
+                        WHERE u.id_usuario = $id_usuario";
+            $resultado = $this->resultQuery($sqlStat);
+            return $resultado;
+        }catch (Exception $e){
+            throw new Exception(" Error obteniendo img de perfil : ".$e->getMessage());         
+        }
+    }
+
     public function getAllFree(){
         try{
             $resultado = $this->resultQuery("select * from usuario where id_usuario not in(select id_usuario from empleado WHERE !isnull(id_usuario))");
@@ -120,7 +156,11 @@ class Usuario extends BaseBiz
 
     public function getById($id_usuario){
         try{
-            $selectStat = "select * from usuario where id_usuario = $id_usuario";
+            $selectStat = "SELECT u.id_usuario,u.usuario,u.email,u.activo,ifnull(p.perfil,pd.perfil) AS perfil
+                            from usuario u
+                            LEFT JOIN perfil p ON u.id_perfil = p.id_perfil
+                            LEFT JOIN perfil pd ON pd.esdefault = 1
+                            WHERE u.id_usuario = $id_usuario";
             $resultado = $this->resultQuery($selectStat);
             if(count($resultado) > 0){                
                 return  $resultado;
@@ -159,7 +199,9 @@ class Usuario extends BaseBiz
 
     public function getByUserName($usuario){
         try{            
-            $selectStatement = " select * from usuario where usuario = '$usuario' ";
+            $selectStatement = "SELECT *
+            FROM usuario u
+            WHERE u.usuario = '$usuario'";
 
             $resultado = $this->resultQuery($selectStatement);            
             if(count($resultado) > 0){                

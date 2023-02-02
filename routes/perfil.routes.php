@@ -84,17 +84,17 @@ $aplicacion->put('/perfil',  function(Request $request, Response $response, $arg
 		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 	})->add($aplicacion->mw_verificarToken);
 
-	$aplicacion->delete('/empleado/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
+	$aplicacion->delete('/cliente/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
 		$dataSalida = array();
 		$statuscode = 201;
-		$statusmsg = 'Empleado actualizado';				 
+		$statusmsg = 'cliente actualizado';				 
 		try{
 			$id = $args['id'];
 			// levanto los parámetros del body del request		
 
-			$objEmpleado = new Empleado();
+			$objCliente = new Cliente();
 
-			$objEmpleado->delete($id);
+			$objCliente->delete($id);
 			 
 			$dataSalida = array();
 			

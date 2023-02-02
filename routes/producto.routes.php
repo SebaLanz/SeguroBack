@@ -109,4 +109,23 @@ $aplicacion->put('/producto/desactivar/{id_producto}', function(Request $request
 	return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
 } )->add($aplicacion->mw_verificarToken);
 
+
+$aplicacion->put('/producto/activar/{id_producto}',  function(Request $request, Response $response, $args) use ($aplicacion){
+	$dataSalida = array();
+	$statusmsg = "producto activado";		
+	$statuscode = 200;	
+	try{
+		$objproducto = new Producto();
+		$objproducto->activar($args['id_producto']);
+		$dataSalida = array();			
+	}catch (Exception $e){
+		$statuscode = 500;		
+		$statusmsg = 'Error :'.$e->getMessage();
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
+} )->add($aplicacion->mw_verificarToken);
+
+
+
+
 ?>

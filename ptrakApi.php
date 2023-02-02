@@ -45,13 +45,22 @@ $aplicacion->mw_verificarToken = function ($request, $response, $next) use ($apl
 };
 
 require_once 'routes/usuario.routes.php'; // endpoints de usuario
-require_once 'routes/empleado.routes.php'; // endpoints de empleado
-require_once 'routes/comprobante.routes.php'; // endpoints de comprobante
+require_once 'routes/cliente.routes.php'; // endpoints de empleado
 require_once 'routes/misc.routes.php'; // endpoints de miscelaneas
 require_once 'routes/rubro.routes.php'; // endpoints de rubro
-require_once 'routes/producto.routes.php';
 require_once 'routes/estado.routes.php'; // endpoints de estado
-require_once 'routes/proveedor.routes.php'; // endpoints de estado
+require_once 'routes/proveedor.routes.php'; // endpoints de proveedor
+require_once 'routes/informe.routes.php'; // endpoints de informe.
+require_once 'routes/automovil.routes.php'; // endpoints de automovil.
+require_once 'routes/plan.routes.php'; // endpoints de plan.
+require_once 'routes/plan_pago.routes.php'; // endpoints de pagos.
+require_once 'routes/medio_de_pago.routes.php'; // endpoints de pagos.
+require_once 'routes/usuarioPerfil.routes.php'; // endpoints de usuarioPerfil.
+
+
+
+
+
 
 
 

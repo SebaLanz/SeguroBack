@@ -76,26 +76,36 @@ $aplicacion->put('/rubro',  function(Request $request, Response $response, $args
 		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 	})->add($aplicacion->mw_verificarToken);
 
-	$aplicacion->delete('/rubro/{id}',  function(Request $request, Response $response, $args) use ($aplicacion){
+
+		$aplicacion->put('/rubro/desactivar/{id_rubro}', function(Request $request, Response $response, $args) use ($aplicacion){
 		$dataSalida = array();
-		$statuscode = 201;
-		$statusmsg = 'rubro actualizado';				 
+		$statusmsg = "rubro desactivado";		
+		$statuscode = 200;	
 		try{
-			$id = $args['id'];
-			// levanto los parámetros del body del request		
-
 			$objrubro = new rubro();
-
-			$objrubro->delete($id);
-			 
+			$objrubro->desactivar($args['id_rubro']);
 			$dataSalida = array();
-			
 		}catch (Exception $e){
-			$statuscode = 500;
+			$statuscode = 500;		
 			$statusmsg = 'Error :'.$e->getMessage();
-		}			
-		return getResponse($response, $statuscode, $dataSalida, $statusmsg);
-	})->add($aplicacion->mw_verificarToken);
-   
+		}
+		return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
+	} )->add($aplicacion->mw_verificarToken);
+
+		$aplicacion->put('/rubro/activar/{id_rubro}', function(Request $request, Response $response, $args) use ($aplicacion){
+			$dataSalida = array();
+			$statusmsg = "rubro activado";		
+			$statuscode = 200;	
+			try{
+				$objrubro = new rubro();
+				$objrubro->activar($args['id_rubro']);
+				$dataSalida = array();			
+			}catch (Exception $e){
+				$statuscode = 500;		
+				$statusmsg = 'Error :'.$e->getMessage();
+			}
+			return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
+		} )->add($aplicacion->mw_verificarToken);
+	   
 
 ?>

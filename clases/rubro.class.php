@@ -1,11 +1,12 @@
 <?php
 require_once ("baseBiz.class.php");
 
+//NO BORRAR
 class Rubro extends BaseBiz{   
 
     public function getAll(){
         try{
-            $resultado = $this->ResultQuery("select * from rubro");
+            $resultado = $this->ResultQuery("SELECT * FROM rubro");
             return $resultado;
         }catch (Exception $e){
             throw new Exception(" Error obteniendo rubro : ".$e->getMessage());         
@@ -14,12 +15,12 @@ class Rubro extends BaseBiz{
 
     public function getById($id_rubro){
         try{
-            $selectStat = "select * from rubro where id_rubro = $id_rubro";
+            $selectStat = "SELECT * FROM rubro WHERE id_rubro = $id_rubro";
             $resultado = $this->ResultQuery($selectStat); 
             if(count($resultado) > 0){                
                 return  $resultado;
             }else{
-                throw new Exception(" El rubro con id $id_rubro no existe ");
+                throw new Exception(" El rubro no existe ");
             }                        
             return  $resultado;           
         }catch (Exception $e){
@@ -54,7 +55,7 @@ class Rubro extends BaseBiz{
             
             // campos no obligatorios
             if(!empty($rubro)){
-                  $updateStat = " update rubro set rubro='$rubro' where id_rubro=$id_rubro";
+                  $updateStat = " UPDATE rubro SET rubro='$rubro' WHERE id_rubro=$id_rubro";
                   $this->noResultQuery($updateStat.$updateFields.$updateFilter);      
             }else{
                 throw new Exception(" El nombre del rubro es obligatorio para actualizar un rubro : ".$e->getMessage());  
@@ -66,29 +67,22 @@ class Rubro extends BaseBiz{
         }
     }
 
-    public function delete($id_rubro){          
-        try{            
-            // valido que exista el id rubro
+    
+    public function activar($id_rubro){
+            $this->updateEstado($id_rubro,1);
+        }
 
-            $recrubro =  $this->getByid($id_rubro);
-        
-            // valido si el rubro ya lo usa algún producto
-            $selectStat = "select id_producto from producto where id_rubro = $id_rubro limit 1";
-            $resultado = $this->ResultQuery($selectStat);
-            if(count( $resultado)==0){
+    public function desactivar($id_rubro){
+        $this->updateEstado($id_rubro,0);
+    }
 
-                $this->iniciarTransaccion();
-                // elimino el rubro
-                $this->NoResultQuery("DELETE FROM rubro WHERE id_rubro = $id_rubro ");
-                   
-            }else{
-                throw new Exception(" No puede eliminarse el rubro porque está siendo utilizado ");
-            }
-
-
-            
+    private function updateEstado($id_rubro,$estado){
+        try{
+            $registroRubro = $this->getById($id_rubro);                      
+            $updStat = "UPDATE rubro SET activo=$estado WHERE id_rubro='$id_rubro'";
+            $this->noResultQuery($updStat);            
         }catch (Exception $e){
-            throw new Exception(" Error eliminando rubro : ".$e->getMessage());         
+            throw new Exception(" No se pudo modificar el estado del rubro. : ".$e->getMessage());         
         }
     }
 

@@ -42,7 +42,7 @@ class Proveedor extends BaseBiz{
 
  
     public function crear( $razon_soc, $cuit, $calle="", $numero_calle="",
-                           $localidad="", $cod_provincia = null, $email="", $telefono=""){ 
+                           $localidad="", $cod_provincia = null, $telefono="", $email=""){ 
                    
         if(!empty($razon_soc) && !empty($cuit)){
             

@@ -34,7 +34,7 @@ $aplicacion->post('/login',  function(Request $request, Response $response, $arg
 				}
 			}else{
 				$statuscode = 401;
-				$statusmsg = ' Usuario o clave incorrectos Api';
+				$statusmsg = ' Usuario o clave incorrectos';
 			}
 		}
 	}catch (Exception $e){
@@ -57,6 +57,35 @@ $aplicacion->get('/usuario/all',  function(Request $request, Response $response,
 		$dataSalida = array();
 	}
 	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
+} )->add($aplicacion->mw_verificarToken);
+
+$aplicacion->get('/usuario/img/{id_usuario}',  function(Request $request, Response $response, array $args) use ($aplicacion){
+	$statuscode = 200;
+	$statusmsg = 'ok';
+	try{			
+		$ousuario = new Usuario();
+		$dataSalida = $ousuario->getImgPerfil($args['id_usuario']);	
+	}catch (Exception $e){
+		$statuscode = 500;
+		$statusmsg = 'Error :'.$e->getMessage();
+		$dataSalida = array();
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
+} )->add($aplicacion->mw_verificarToken);
+
+// obtener id usuario logeado
+$aplicacion->get('/usuario/id/{usuario}',  function(Request $request, Response $response, $args) use ($aplicacion){
+	$dataSalida = array();
+	$statusmsg = "ok";		
+	$statuscode = 200;	
+	try{
+		$ousuario = new Usuario();
+		$dataSalida = $ousuario->getByUserName($args['usuario']);			
+	}catch (Exception $e){
+		$statuscode = 500;		
+		$statusmsg = 'Error :'.$e->getMessage();
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
 } )->add($aplicacion->mw_verificarToken);
 
 	// lista de usuarios libres
@@ -91,6 +120,8 @@ $aplicacion->post('/usuario',  function(Request $request, Response $response, $a
 	}
 	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
 })->add($aplicacion->mw_verificarToken);
+
+
 
 
 // cambiar clave
@@ -177,7 +208,21 @@ $aplicacion->get('/usuario/{id}',  function(Request $request, Response $response
 	return getResponse($response, $statuscode, $dataSalida, $statusmsg);	
 } )->add($aplicacion->mw_verificarToken);
 
-   	
+// obtener ultimo usuario
+$aplicacion->get('/usuario/ultimoid/id',  function(Request $request, Response $response, array $args) use ($aplicacion){
+	$statuscode = 200;
+	$statusmsg = 'ok';
+	try{			
+		$ousuario = new Usuario();
+		$dataSalida = $ousuario->getLastId();	
+	}catch (Exception $e){
+		$statuscode = 500;
+		$statusmsg = 'Error :'.$e->getMessage();
+		$dataSalida = array();
+	}
+	return getResponse($response, $statuscode, $dataSalida, $statusmsg);
+} )->add($aplicacion->mw_verificarToken);
+
 
 
 ?>
