@@ -21,14 +21,14 @@ class Email extends BaseBiz{
 			$mail->isHTML( TRUE );
 			$mail->SMTPAuth    = TRUE;
 			$mail->SMTPSecure = "tls";
-			$mail->Username = SMTP_USER;                   
-			$mail->Password = SMTP_PASSWORD;
+			$mail->Username = SMTP_USER;   //Usuario que envía los mails. Preferible outlook. Datos entre "".               
+			$mail->Password = SMTP_PASSWORD;//Clave del usuario que envía mails. Datos entre ""
 			$mail->AddAddress($destino);
 			$mail->FromName = $fromName;
 			$mail->Subject = $subject;
 			$mail->Body = $mensaje;
-			$mail->Host = SMTP_SERVER;
-			$mail->Port = SMTP_PORT;
+			$mail->Host = smtp.office365.com; 
+			$mail->Port = 587;
 			//$mail->SMTPDebug   = 1; // 2 to enable SMTP debug information
 			$mail->SMTPOptions = array('ssl' => array(
 			    'verify_peer' => false,
